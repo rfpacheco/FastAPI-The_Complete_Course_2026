@@ -5,14 +5,14 @@ from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 class Users(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True)
-    username = Column(String, unique=True)
-    first_name = Column(String)
-    last_name = Column(String)
-    hashed_password = Column(String)
-    is_active = Column(Boolean, default=True)
-    role = Column(String)
+    id: int = Column(Integer, primary_key=True, index=True)
+    email: str = Column(String, unique=True)
+    username: str = Column(String, unique=True)
+    first_name: str = Column(String)
+    last_name: str = Column(String)
+    hashed_password: str = Column(String)
+    is_active: bool = Column(Boolean, default=True)
+    role: str = Column(String)
 
 
 class Todos(Base):
