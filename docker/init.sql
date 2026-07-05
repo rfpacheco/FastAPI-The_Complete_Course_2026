@@ -32,7 +32,8 @@ INSERT INTO users (email, username, first_name, last_name, hashed_password, is_a
 VALUES
     ('john.doe@example.com', 'johndoe', 'John', 'Doe', '$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lm', TRUE, 'admin', '+1-555-0101'),
     ('jane.smith@example.com', 'janesmith', 'Jane', 'Smith', '$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lm', TRUE, 'user', '+1-555-0102'),
-    ('bob.wilson@example.com', 'bobwilson', 'Bob', 'Wilson', '$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lm', TRUE, 'user', '+1-555-0103')
+    ('bob.wilson@example.com', 'bobwilson', 'Bob', 'Wilson', '$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lm', TRUE, 'user', '+1-555-0103'),
+    ('codingwithroby@email.com', 'codingwithroby', 'Eric', 'Roby', '$2b$12$urhVZuSkSRAXbHWXb7SmZei4Y1wnFezWbxcos93SaD7Fj29Z7F/s6', TRUE, 'admin', NULL)
 ON CONFLICT (email) DO NOTHING;
 
 -- Insert sample todos

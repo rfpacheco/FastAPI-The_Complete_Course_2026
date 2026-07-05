@@ -22,6 +22,8 @@ This command will:
 
 > **Note:** Use `docker compose` (Docker v20.10+). If using an older Docker version, replace with `docker compose`.
 
+> **⚠️ Important:** `docker/init.sql` only runs the **first** time the container is created against an **empty** `postgres_data` volume. If the container already exists (e.g. you've run `docker compose up -d` before), re-running it will **not** re-seed the database, even after editing `init.sql`. See [Checking and Re-Seeding an Existing Database](#checking-and-re-seeding-an-existing-database) below.
+
 ### 2. Verify the Database is Running
 
 ```bash
@@ -119,13 +121,40 @@ The `docker/init.sql` file includes:
 1. **John Doe** (johndoe) — Admin role
 2. **Jane Smith** (janesmith) — User role
 3. **Bob Wilson** (bobwilson) — User role
+4. **Eric Roby** (codingwithroby) — Admin role
 
-All have the same test password hashed with bcrypt:
+John, Jane, and Bob share the same test password hashed with bcrypt:
 - Hashed password: `$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lm`
 - Plain password: `secret` (for testing)
 
+Eric's password:
+- Plain password: `test1234` (for testing)
+
 ### Sample Todos
 8 sample todos distributed among users with varying priorities and completion status.
+
+---
+
+## Checking and Re-Seeding an Existing Database
+
+### Is the database already seeded?
+```bash
+docker compose exec postgres psql -U postgres -d TodoApplicationServer -c "SELECT id, username, email, role FROM users;"
+```
+If this returns rows, the container was already initialized and `docker/init.sql` will **not** run again on `docker compose up -d` — Postgres only executes files in `/docker-entrypoint-initdb.d/` when the data directory is empty.
+
+### Re-seed without wiping existing data
+To (re)apply `docker/init.sql` against an **already-running** container — for example after adding a new sample user to the file — pipe it through `psql` directly. The `ON CONFLICT ... DO NOTHING` clauses in the script make this safe to run repeatedly; existing rows are left untouched and only missing ones are inserted:
+```bash
+docker compose exec -T postgres psql -U postgres -d TodoApplicationServer < docker/init.sql
+```
+
+### Re-seed from scratch (destructive)
+To force the full init script to run again exactly as it would on a brand-new setup:
+```bash
+docker compose down -v   # deletes postgres_data volume — all data is lost
+docker compose up -d     # re-creates the container and re-runs docker/init.sql
+```
 
 ---
 
