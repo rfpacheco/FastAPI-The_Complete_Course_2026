@@ -44,6 +44,10 @@ class ChangePasswordRequest(BaseModel):
     new_password: str
 
 
+class UpdatePhoneRequest(BaseModel):
+    phone_number: str
+
+
 @router.get("/", response_model=UserResponse, status_code=status.HTTP_200_OK)
 async def get_user(user: user_dependency, db: db_dependency):
     if user is None:
@@ -62,5 +66,20 @@ async def change_password(user: user_dependency, db: db_dependency,
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Current password is incorrect.')
 
     user_model.hashed_password = bcrypt_context.hash(password_request.new_password)
+    db.add(user_model)
+    db.commit()
+
+
+@router.put("/phone", status_code=status.HTTP_204_NO_CONTENT)
+async def update_phone_number(user: user_dependency, db: db_dependency,
+                              phone_request: UpdatePhoneRequest):
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
+
+    user_model = db.query(Users).filter(Users.id == user.get('id')).first()
+    if user_model is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
+
+    user_model.phone_number = phone_request.phone_number
     db.add(user_model)
     db.commit()
