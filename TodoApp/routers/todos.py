@@ -57,6 +57,8 @@ async def create_todo(user: user_dependency, db: db_dependency,
 
     db.add(todo_model)
     db.commit()
+    db.refresh(todo_model)
+    return todo_model
 
 
 def get_todo_or_404(db: Session, todo_id: int, user_id: int) -> Todos:
