@@ -13,7 +13,7 @@ class Users(Base):
     hashed_password: str = Column(String(255), nullable=False)
     is_active: bool = Column(Boolean, default=True)
     role: str = Column(String(50), default="user", nullable=False)
-    phone_number: str = Column(String, nullable=True)
+    phone_number: str = Column(String, nullable=False)
 
     __table_args__ = (
         Index("idx_users_email", "email"),
